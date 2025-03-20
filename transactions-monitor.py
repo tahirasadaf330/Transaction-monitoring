@@ -158,8 +158,7 @@ def send_email_alert(anomalies, anomaly_percentage, total_transactions):
         msg["Subject"] = subject
         msg.attach(MIMEText(body, "plain"))
 
-        with smtplib.SMTP(SMTP_CONFIG["server"], SMTP_CONFIG["port"]) as server:
-            server.starttls()
+        with smtplib.SMTP_SSL(SMTP_CONFIG["server"], SMTP_CONFIG["port"]) as server:
             server.login(SMTP_CONFIG["user"], SMTP_CONFIG["password"])
             server.send_message(msg)
 
