@@ -14,11 +14,10 @@ DB_CONFIG = {
 }
 
 SMTP_CONFIG = {
-    "server": "smtp.sendgrid.net",  # SMTP Server Address
-    "port": 465,  # SMTP Port (SSL)
-    "user": "apikey",  # SMTP Username
-    "password": "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",  # SMTP Password
-    "encryption": "ssl",  # Encryption method
+    "server": "sandbox.smtp.mailtrap.io",  # SMTP Server Address
+    "port": 2525,  # SMTP Port (Mailtrap default)
+    "user": "ec58c7879be716",  # SMTP Username
+    "password": "b422665d06017c",  # SMTP Password
     "sender": "Private Person <from@example.com>",  # Sender Email
     "receiver": "A Test User <to@example.com>"  # Receiver Email
 }
