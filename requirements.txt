@@ -1,10 +1,10 @@
-time 
-smtplib
-email.mime.multipart
-email.mime.text
+# time 
+# smtplib
+# email.mime.multipart
+# email.mime.text
 datetime
 timedelta
 pandas
 schedule
 mysql-connector-python
-sklearn.ensemble.IsolationForest
+# sklearn.ensemble.IsolationForest
