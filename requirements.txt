@@ -1,10 +1,8 @@
-# time 
-# smtplib
-# email.mime.multipart
-# email.mime.text
+scikit-learn
 datetime
 timedelta
 pandas
 schedule
+pandas
+dotenv
 mysql-connector-python
-# sklearn.ensemble.IsolationForest
