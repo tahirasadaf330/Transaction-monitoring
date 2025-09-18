@@ -7,8 +7,8 @@ from datetime import datetime, timedelta
 from configuration import DB_CONFIG
 
 # Slack config
-SLACK_WEBHOOK_URL = "https://hooks.slack.com/services/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"
-SLACK_MENTION = "<@C08L0NRFWDN>"  # Same user/channel mention
+SLACK_WEBHOOK_URL = "https://hooks.slack.com/services/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"
+SLACK_MENTION = "<C09FV443JBC>"  # Same user/channel mention
 
 conn = None
 previous_hourly_alerts = []
