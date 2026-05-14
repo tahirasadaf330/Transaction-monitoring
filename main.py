@@ -7,8 +7,8 @@ from datetime import datetime, timedelta
 from configuration import DB_CONFIG
 
 # Slack config
-SLACK_WEBHOOK_URL = "https://hooks.slack.com/services/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"
-SLACK_MENTION = "<C09FV443JBC>"  # Same user/channel mention
+TEAMS_WEBHOOK_URL = "https://kingrevolution.webhook.office.com/webhookb2/c85bd28b-4dea-40d2-a38b-8139fd783683@1df4ce7a-fa8a-42ff-9802-1f1be9c52d8d/IncomingWebhook/61ee9ebe1b8b423f906ad44666d03cdd/a24d1176-99a1-4e2c-a116-37730eb3acd5/V22RH-nOPYL4c4RT8bASAlwnMmWHCmhUA9uWOdfh59Lgs1"
+#SLACK_MENTION = "<C09FV443JBC>"  # Same user/channel mention
 
 conn = None
 previous_hourly_alerts = []
@@ -95,7 +95,7 @@ def detect_timed_anomalies():
                     'transaction_count': current_count,
                     'type': "alert",  # New alert type
                 }
-                send_slack_alert(alert)
+                send_teams_alert(alert)
                 previous_hourly_alerts.append(alert_key)
                 anomalies_found += 1
             else:
@@ -104,38 +104,38 @@ def detect_timed_anomalies():
         total_checked += 1
 
     print(f"🧾 Checked {total_checked} 10-minute window(s).")
-    print(f"🚨 Detected {anomalies_found} anomaly{'ies' if anomalies_found != 1 else ''} with transactions >= 10 or amount >= $50.")
+    label = "anomaly" if anomalies_found == 1 else "anomalies"
+    print(f"🚨 Detected {anomalies_found} {label} with transactions >= 10 or amount >= $50.")
 
-def send_slack_alert(alert):
-    print("\n📤 Sending Slack alert...")
+def send_teams_alert(alert):
+    """Send alert to Microsoft Teams using MessageCard format."""
+    print("\n📤 Sending Teams alert...")
 
     emoji = "🚨" if alert['type'] == "alert" else "⚠️"
-    change_text = f"${alert['current_amount']:.2f}"
-
     payload = {
-        "text": f"{SLACK_MENTION} timed transaction anomaly detected.",
-        "blocks": [
+        "@type": "MessageCard",
+        "@context": "https://schema.org/extensions",
+        "summary": "Transaction Alert",
+        "themeColor": "FF6B6B",
+        "sections": [
             {
-                "type": "header",
-                "text": {"type": "plain_text", "text": f"{emoji} Transaction Alert"}
-            },
-            {
-                "type": "section",
-                "fields": [
-                    {"type": "mrkdwn", "text": f"*🕒 Time:*\n{alert['time']} (Time of Anomaly)"},
-                    {"type": "mrkdwn", "text": f"*💰 Current Amount:*\n${alert['current_amount']:.2f}"},
-                    {"type": "mrkdwn", "text": f"*📊 Transactions Count:*\n{alert['transaction_count']}"}
-                ]
+                "activityTitle": f"{emoji} Transaction Alert",
+                "activitySubtitle": "Anomaly Detected",
+                "facts": [
+                    {"name": "🕒 Time:", "value": f"{alert['time']} (Time of Anomaly)"},
+                    {"name": "💰 Current Amount:", "value": f"${alert['current_amount']:.2f}"},
+                    {"name": "📊 Transactions Count:", "value": f"{alert['transaction_count']}"},
+                ],
             }
-        ]
+        ],
     }
 
-    response = requests.post(SLACK_WEBHOOK_URL, json=payload)
+    response = requests.post(TEAMS_WEBHOOK_URL, json=payload)
 
     if response.status_code == 200:
-        print("✅ Slack alert sent successfully!")
+        print("✅ Teams alert sent successfully!")
     else:
-        print(f"❌ Failed to send Slack alert. Status: {response.status_code}, Response: {response.text}")
+        print(f"❌ Failed to send Teams alert. Status: {response.status_code}, Response: {response.text}")
 
 # Schedule every 10 minutes
 schedule.every(10).minutes.do(detect_timed_anomalies)  # Check every 10 minutes
