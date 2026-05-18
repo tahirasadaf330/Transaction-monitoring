@@ -1,9 +1,8 @@
 import pandas as pd
-import schedule
-import time
 import mysql.connector
 import requests
 from datetime import datetime, timedelta
+from zoneinfo import ZoneInfo
 from configuration import DB_CONFIG
 
 # Slack config
@@ -59,8 +58,8 @@ def fetch_timed_transaction_data():
 def detect_timed_anomalies():
     global previous_hourly_alerts
 
-    current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')  # Get the current time
-    print(f"\n🔄 Checking for anomalies at {current_time}...")  # Log the exact time the script runs
+    current_time = datetime.now(ZoneInfo("Asia/Karachi")).strftime('%Y-%m-%d %H:%M:%S')
+    print(f"\n🔄 Checking for anomalies at {current_time}...")
 
     df = fetch_timed_transaction_data()
     if df.empty:
@@ -137,13 +136,5 @@ def send_teams_alert(alert):
     else:
         print(f"❌ Failed to send Teams alert. Status: {response.status_code}, Response: {response.text}")
 
-# Schedule every 10 minutes
-schedule.every(10).minutes.do(detect_timed_anomalies)  # Check every 10 minutes
-print("\n📌 Timed Transaction Monitoring Started. Checking every 10 minutes.")
-
-# Initial check when the script starts
-detect_timed_anomalies()
-
-while True:
-    schedule.run_pending()
-    time.sleep(1)
+if __name__ == "__main__":
+    detect_timed_anomalies()
